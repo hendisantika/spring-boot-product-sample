@@ -187,4 +187,21 @@ class ProductServiceImplTest {
         assertEquals(productList, result.getContent());
         verify(productRepository, times(1)).findByCategory("Test Category", pageable);
     }
+
+
+    @Test
+    void findByPriceRange_ShouldReturnListOfProducts() {
+        // Arrange
+        BigDecimal minPrice = new BigDecimal("50.00");
+        BigDecimal maxPrice = new BigDecimal("200.00");
+        when(productRepository.findByPriceRange(minPrice, maxPrice)).thenReturn(productList);
+
+        // Act
+        List<Product> result = productService.findByPriceRange(minPrice, maxPrice);
+
+        // Assert
+        assertEquals(2, result.size());
+        assertEquals(productList, result);
+        verify(productRepository, times(1)).findByPriceRange(minPrice, maxPrice);
+    }
 }
