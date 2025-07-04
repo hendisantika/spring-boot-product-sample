@@ -176,7 +176,12 @@ public class ProductController {
             @Parameter(description = "ID of the product to update", required = true) @PathVariable Long id,
             @Parameter(description = "New stock quantity", required = true) @PathVariable Integer stock) {
         log.info("Updating stock for product ID: {} to {}", id, stock);
-        return ResponseEntity.ok(productService.updateStock(id, stock));
+        try {
+            return ResponseEntity.ok(productService.updateStock(id, stock));
+        } catch (RuntimeException e) {
+            log.error("Error updating stock for product ID: {}", id, e);
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**
