@@ -8,6 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -151,4 +155,21 @@ class ProductServiceImplTest {
         assertEquals(testProduct, result.get());
         verify(productRepository, times(1)).findByName("Test Product");
     }
+
+    @Test
+    void findAllProducts_ShouldReturnPageOfProducts() {
+        // Arrange
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Product> productPage = new PageImpl<>(productList, pageable, productList.size());
+        when(productRepository.findAll(pageable)).thenReturn(productPage);
+
+        // Act
+        Page<Product> result = productService.findAllProducts(pageable);
+
+        // Assert
+        assertEquals(2, result.getTotalElements());
+        assertEquals(productList, result.getContent());
+        verify(productRepository, times(1)).findAll(pageable);
+    }
+
 }
