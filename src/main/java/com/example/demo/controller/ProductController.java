@@ -66,4 +66,21 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Get product by name.
+     */
+    @Operation(summary = "Get a product by name", description = "Returns a product based on the provided name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product found",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Product> getProductByName(
+            @Parameter(description = "Name of the product to retrieve", required = true) @PathVariable String name) {
+        log.info("Fetching product with name: {}", name);
+        return productService.findByName(name)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
