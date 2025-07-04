@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -135,5 +136,16 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     void getProductByName_ShouldReturnNotFound_WhenProductDoesNotExist() throws Exception {
         mockMvc.perform(get("/api/products/name/{name}", "Nonexistent Product"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getAllProducts_ShouldReturnPageOfProducts() throws Exception {
+        mockMvc.perform(get("/api/products")
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].name", is("Test Product")))
+                .andExpect(jsonPath("$.content[1].name", is("Test Product 2")));
     }
 }
