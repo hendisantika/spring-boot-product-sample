@@ -172,4 +172,19 @@ class ProductServiceImplTest {
         verify(productRepository, times(1)).findAll(pageable);
     }
 
+    @Test
+    void findByCategory_ShouldReturnPageOfProducts() {
+        // Arrange
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Product> productPage = new PageImpl<>(productList, pageable, productList.size());
+        when(productRepository.findByCategory("Test Category", pageable)).thenReturn(productPage);
+
+        // Act
+        Page<Product> result = productService.findByCategory("Test Category", pageable);
+
+        // Assert
+        assertEquals(2, result.getTotalElements());
+        assertEquals(productList, result.getContent());
+        verify(productRepository, times(1)).findByCategory("Test Category", pageable);
+    }
 }
