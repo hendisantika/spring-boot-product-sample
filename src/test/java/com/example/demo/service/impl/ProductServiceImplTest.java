@@ -279,4 +279,18 @@ class ProductServiceImplTest {
         // Assert
         verify(productRepository, times(1)).deleteById(1L);
     }
+
+    @Test
+    void countByCategory_ShouldReturnCount() {
+        // Arrange
+        when(productRepository.countByCategory("Test Category")).thenReturn(2L);
+
+        // Act
+        long count = productService.countByCategory("Test Category");
+
+        // Assert
+        assertEquals(2L, count);
+        verify(productRepository, times(1)).countByCategory("Test Category");
+    }
+
 }
