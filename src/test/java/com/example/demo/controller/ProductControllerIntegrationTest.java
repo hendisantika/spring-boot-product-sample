@@ -160,4 +160,14 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.content[1].category", is("Test Category")));
     }
 
+    @Test
+    void getProductsByPriceRange_ShouldReturnListOfProducts() throws Exception {
+        mockMvc.perform(get("/api/products/price-range")
+                        .param("min", "50.00")
+                        .param("max", "200.00"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].price", is(99.99)))
+                .andExpect(jsonPath("$[1].price", is(199.99)));
+    }
 }
