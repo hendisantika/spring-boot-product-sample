@@ -119,4 +119,15 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/api/products/999"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void getProductByName_ShouldReturnProduct_WhenProductExists() throws Exception {
+        mockMvc.perform(get("/api/products/name/{name}", "Test Product"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("Test Product")))
+                .andExpect(jsonPath("$.description", is("Test Description")))
+                .andExpect(jsonPath("$.category", is("Test Category")))
+                .andExpect(jsonPath("$.price", is(99.99)))
+                .andExpect(jsonPath("$.stock", is(100)));
+    }
 }
