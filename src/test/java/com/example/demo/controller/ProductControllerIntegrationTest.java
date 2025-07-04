@@ -4,6 +4,7 @@ import com.example.demo.config.AbstractIntegrationTest;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -59,5 +60,10 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
 
         productList = Arrays.asList(testProduct, product2);
         productRepository.saveAll(productList);
+    }
+
+    @AfterEach
+    void tearDown() {
+        productRepository.deleteAll();
     }
 }
