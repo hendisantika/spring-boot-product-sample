@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -293,4 +294,37 @@ class ProductServiceImplTest {
         verify(productRepository, times(1)).countByCategory("Test Category");
     }
 
+    @Test
+    void saveAllProducts_ShouldSetCreatedAtAndUpdatedAt_WhenCreatedAtIsNull() {
+        // Arrange
+        List<Product> productsToSave = Arrays.asList(
+                Product.builder()
+                        .name("Bulk Product 1")
+                        .description("Bulk Description 1")
+                        .category("Bulk Category")
+                        .price(new BigDecimal("99.99"))
+                        .stock(100)
+                        .build(),
+                Product.builder()
+                        .name("Bulk Product 2")
+                        .description("Bulk Description 2")
+                        .category("Bulk Category")
+                        .price(new BigDecimal("199.99"))
+                        .stock(200)
+                        .build()
+        );
+
+        when(productRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        List<Product> savedProducts = productService.saveAllProducts(productsToSave);
+
+        // Assert
+        assertEquals(2, savedProducts.size());
+        savedProducts.forEach(product -> {
+            assertNotNull(product.getCreatedAt());
+            assertNotNull(product.getUpdatedAt());
+        });
+        verify(productRepository, times(1)).saveAll(productsToSave);
+    }
 }
