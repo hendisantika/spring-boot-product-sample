@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -83,4 +87,23 @@ public class ProductController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    /**
+     * Get all products with pagination.
+     */
+    @Operation(summary = "Get all products", description = "Returns a paginated list of all products")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class)))
+    })
+    @GetMapping
+    public ResponseEntity<Page<Product>> getAllProducts(
+            @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Size of each page") @RequestParam(defaultValue = "20") int size,
+            @Parameter(description = "Field to sort by") @RequestParam(defaultValue = "id") String sort) {
+        log.info("Fetching all products - page: {}, size: {}, sort: {}", page, size, sort);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sort));
+        return ResponseEntity.ok(productService.findAllProducts(pageRequest));
+    }
+
 }
