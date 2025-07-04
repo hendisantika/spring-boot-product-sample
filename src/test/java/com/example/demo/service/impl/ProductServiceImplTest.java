@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -12,6 +13,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
@@ -51,5 +58,27 @@ class ProductServiceImplTest {
                 .build();
 
         productList = Arrays.asList(testProduct, product2);
+    }
+
+    @Test
+    void saveProduct_ShouldSetCreatedAtAndUpdatedAt_WhenCreatedAtIsNull() {
+        // Arrange
+        Product productToSave = Product.builder()
+                .name("New Product")
+                .description("New Description")
+                .category("New Category")
+                .price(new BigDecimal("149.99"))
+                .stock(75)
+                .build();
+
+        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Product savedProduct = productService.saveProduct(productToSave);
+
+        // Assert
+        assertNotNull(savedProduct.getCreatedAt());
+        assertNotNull(savedProduct.getUpdatedAt());
+        verify(productRepository, times(1)).save(productToSave);
     }
 }
