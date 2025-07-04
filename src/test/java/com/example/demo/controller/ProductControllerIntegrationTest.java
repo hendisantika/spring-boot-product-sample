@@ -230,4 +230,32 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("2"));
     }
+
+    @Test
+    void createProductsBulk_ShouldCreateMultipleProducts() throws Exception {
+        List<Product> newProducts = Arrays.asList(
+                Product.builder()
+                        .name("Bulk Product 1")
+                        .description("Bulk Description 1")
+                        .category("Bulk Category")
+                        .price(new BigDecimal("99.99"))
+                        .stock(100)
+                        .build(),
+                Product.builder()
+                        .name("Bulk Product 2")
+                        .description("Bulk Description 2")
+                        .category("Bulk Category")
+                        .price(new BigDecimal("199.99"))
+                        .stock(200)
+                        .build()
+        );
+
+        mockMvc.perform(post("/api/products/bulk")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newProducts)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", is("Bulk Product 1")))
+                .andExpect(jsonPath("$[1].name", is("Bulk Product 2")));
+    }
 }
