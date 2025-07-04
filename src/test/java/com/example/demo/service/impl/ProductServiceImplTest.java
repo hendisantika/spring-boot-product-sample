@@ -223,4 +223,30 @@ class ProductServiceImplTest {
         verify(productRepository, times(1)).findLowStockProducts(60);
     }
 
+    @Test
+    void updateStock_ShouldUpdateStockAndReturnProduct_WhenProductExists() {
+        // Arrange
+        // Create a copy of the test product
+        Product productToUpdate = Product.builder()
+                .id(testProduct.getId())
+                .name(testProduct.getName())
+                .description(testProduct.getDescription())
+                .category(testProduct.getCategory())
+                .price(testProduct.getPrice())
+                .stock(testProduct.getStock())
+                .createdAt(testProduct.getCreatedAt())
+                .updatedAt(testProduct.getUpdatedAt())
+                .build();
+        when(productRepository.findById(1L)).thenReturn(Optional.of(productToUpdate));
+        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Product updatedProduct = productService.updateStock(1L, 200);
+
+        // Assert
+        assertEquals(200, updatedProduct.getStock());
+        assertNotNull(updatedProduct.getUpdatedAt());
+        verify(productRepository, times(1)).findById(1L);
+        verify(productRepository, times(1)).save(productToUpdate);
+    }
 }
