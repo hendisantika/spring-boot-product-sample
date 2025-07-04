@@ -13,9 +13,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -106,5 +108,19 @@ class ProductServiceImplTest {
         assertEquals(createdAt, updatedProduct.getCreatedAt());
         assertNotNull(updatedProduct.getUpdatedAt());
         verify(productRepository, times(1)).save(productToUpdate);
+    }
+
+    @Test
+    void findById_ShouldReturnProduct_WhenProductExists() {
+        // Arrange
+        when(productRepository.findById(1L)).thenReturn(Optional.of(testProduct));
+
+        // Act
+        Optional<Product> result = productService.findById(1L);
+
+        // Assert
+        assertTrue(result.isPresent());
+        assertEquals(testProduct, result.get());
+        verify(productRepository, times(1)).findById(1L);
     }
 }
