@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,4 +47,23 @@ public class ProductController {
         log.info("Creating new product: {}", product.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.saveProduct(product));
     }
+
+    /**
+     * Get product by ID.
+     */
+    @Operation(summary = "Get a product by ID", description = "Returns a product based on the provided ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product found",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(
+            @Parameter(description = "ID of the product to retrieve", required = true) @PathVariable Long id) {
+        log.info("Fetching product with ID: {}", id);
+        return productService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }
