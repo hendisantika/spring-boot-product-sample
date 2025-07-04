@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -96,5 +97,20 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.stock", is(75)))
                 .andExpect(jsonPath("$.createdAt", notNullValue()))
                 .andExpect(jsonPath("$.updatedAt", notNullValue()));
+    }
+
+    @Test
+    void getProductById_ShouldReturnProduct_WhenProductExists() throws Exception {
+        // Get the ID of the saved product
+        Long productId = productRepository.findByName("Test Product").orElseThrow().getId();
+
+        mockMvc.perform(get("/api/products/{id}", productId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(productId.intValue())))
+                .andExpect(jsonPath("$.name", is("Test Product")))
+                .andExpect(jsonPath("$.description", is("Test Description")))
+                .andExpect(jsonPath("$.category", is("Test Category")))
+                .andExpect(jsonPath("$.price", is(99.99)))
+                .andExpect(jsonPath("$.stock", is(100)));
     }
 }
