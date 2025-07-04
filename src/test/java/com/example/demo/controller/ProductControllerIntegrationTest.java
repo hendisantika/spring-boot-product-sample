@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -221,5 +222,12 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         // Verify the product is deleted
         mockMvc.perform(get("/api/products/{id}", productId))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void countProductsByCategory_ShouldReturnCount() throws Exception {
+        mockMvc.perform(get("/api/products/count/category/{category}", "Test Category"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("2"));
     }
 }
