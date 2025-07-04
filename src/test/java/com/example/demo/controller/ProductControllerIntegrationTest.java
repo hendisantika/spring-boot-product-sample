@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -205,6 +206,20 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     void updateProductStock_ShouldReturnNotFound_WhenProductDoesNotExist() throws Exception {
         mockMvc.perform(patch("/api/products/999/stock/200"))
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    void deleteProduct_ShouldDeleteProduct() throws Exception {
+        // Get the ID of the saved product
+        Long productId = productRepository.findByName("Test Product").orElseThrow().getId();
+
+        mockMvc.perform(delete("/api/products/{id}", productId))
+                .andExpect(status().isNoContent());
+
+        // Verify the product is deleted
+        mockMvc.perform(get("/api/products/{id}", productId))
                 .andExpect(status().isNotFound());
     }
 }
