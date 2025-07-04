@@ -194,4 +194,19 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * Count products by category.
+     */
+    @Operation(summary = "Count products by category", description = "Returns the total number of products in the specified category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Count retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Long.class)))
+    })
+    @GetMapping("/count/category/{category}")
+    public ResponseEntity<Long> countProductsByCategory(
+            @Parameter(description = "Category to count products for", required = true) @PathVariable String category) {
+        log.info("Counting products by category: {}", category);
+        return ResponseEntity.ok(productService.countByCategory(category));
+    }
 }
