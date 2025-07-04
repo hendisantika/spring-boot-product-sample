@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -176,5 +177,21 @@ public class ProductController {
             @Parameter(description = "New stock quantity", required = true) @PathVariable Integer stock) {
         log.info("Updating stock for product ID: {} to {}", id, stock);
         return ResponseEntity.ok(productService.updateStock(id, stock));
+    }
+
+    /**
+     * Delete product.
+     */
+    @Operation(summary = "Delete a product", description = "Deletes a product with the specified ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(
+            @Parameter(description = "ID of the product to delete", required = true) @PathVariable Long id) {
+        log.info("Deleting product with ID: {}", id);
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }
