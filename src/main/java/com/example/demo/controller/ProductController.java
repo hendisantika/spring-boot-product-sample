@@ -106,4 +106,22 @@ public class ProductController {
         return ResponseEntity.ok(productService.findAllProducts(pageRequest));
     }
 
+    /**
+     * Get products by category with pagination.
+     */
+    @Operation(summary = "Get products by category", description = "Returns a paginated list of products in the specified category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Page.class)))
+    })
+    @GetMapping("/category/{category}")
+    public ResponseEntity<Page<Product>> getProductsByCategory(
+            @Parameter(description = "Category to filter by", required = true) @PathVariable String category,
+            @Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Size of each page") @RequestParam(defaultValue = "20") int size) {
+        log.info("Fetching products by category: {} - page: {}, size: {}", category, page, size);
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return ResponseEntity.ok(productService.findByCategory(category, pageRequest));
+    }
+
 }
