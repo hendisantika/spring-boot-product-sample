@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 /**
  * REST controller for Product operations optimized for high performance.
  */
@@ -124,4 +127,19 @@ public class ProductController {
         return ResponseEntity.ok(productService.findByCategory(category, pageRequest));
     }
 
+    /**
+     * Get products by price range.
+     */
+    @Operation(summary = "Get products by price range", description = "Returns a list of products within the specified price range")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class)))
+    })
+    @GetMapping("/price-range")
+    public ResponseEntity<List<Product>> getProductsByPriceRange(
+            @Parameter(description = "Minimum price", required = true) @RequestParam BigDecimal min,
+            @Parameter(description = "Maximum price", required = true) @RequestParam BigDecimal max) {
+        log.info("Fetching products by price range: {} - {}", min, max);
+        return ResponseEntity.ok(productService.findByPriceRange(min, max));
+    }
 }
