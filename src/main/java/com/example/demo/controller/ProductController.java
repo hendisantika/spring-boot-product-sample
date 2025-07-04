@@ -209,4 +209,20 @@ public class ProductController {
         log.info("Counting products by category: {}", category);
         return ResponseEntity.ok(productService.countByCategory(category));
     }
+
+    /**
+     * Bulk create products.
+     */
+    @Operation(summary = "Bulk create products", description = "Creates multiple products in a single request for better performance")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Products created successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
+    })
+    @PostMapping("/bulk")
+    public ResponseEntity<List<Product>> createProductsBulk(
+            @Parameter(description = "List of product objects to be created", required = true) @RequestBody List<Product> products) {
+        log.info("Bulk creating {} products", products.size());
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.saveAllProducts(products));
+    }
 }
