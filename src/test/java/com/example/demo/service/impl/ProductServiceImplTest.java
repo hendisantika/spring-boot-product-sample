@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -123,4 +124,18 @@ class ProductServiceImplTest {
         assertEquals(testProduct, result.get());
         verify(productRepository, times(1)).findById(1L);
     }
+
+    @Test
+    void findById_ShouldReturnEmpty_WhenProductDoesNotExist() {
+        // Arrange
+        when(productRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // Act
+        Optional<Product> result = productService.findById(999L);
+
+        // Assert
+        assertFalse(result.isPresent());
+        verify(productRepository, times(1)).findById(999L);
+    }
+
 }
