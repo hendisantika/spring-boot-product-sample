@@ -113,4 +113,10 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.price", is(99.99)))
                 .andExpect(jsonPath("$.stock", is(100)));
     }
+
+    @Test
+    void getProductById_ShouldReturnNotFound_WhenProductDoesNotExist() throws Exception {
+        mockMvc.perform(get("/api/products/999"))
+                .andExpect(status().isNotFound());
+    }
 }
