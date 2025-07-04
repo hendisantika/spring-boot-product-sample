@@ -27,6 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -262,5 +264,19 @@ class ProductServiceImplTest {
         });
         assertEquals("Product not found with ID: 999", exception.getMessage());
         verify(productRepository, times(1)).findById(999L);
-
+        verify(productRepository, never()).save(any(Product.class));
     }
+
+
+    @Test
+    void deleteProduct_ShouldCallRepositoryDeleteById() {
+        // Arrange
+        doNothing().when(productRepository).deleteById(1L);
+
+        // Act
+        productService.deleteProduct(1L);
+
+        // Assert
+        verify(productRepository, times(1)).deleteById(1L);
+    }
+}
