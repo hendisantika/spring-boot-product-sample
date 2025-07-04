@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -204,4 +206,21 @@ class ProductServiceImplTest {
         assertEquals(productList, result);
         verify(productRepository, times(1)).findByPriceRange(minPrice, maxPrice);
     }
+
+    @Test
+    void findLowStockProductsAsync_ShouldReturnCompletableFutureOfProducts() throws ExecutionException, InterruptedException {
+        // Arrange
+        List<Product> lowStockProducts = List.of(productList.get(1)); // product with stock 50
+        when(productRepository.findLowStockProducts(60)).thenReturn(lowStockProducts);
+
+        // Act
+        CompletableFuture<List<Product>> futureResult = productService.findLowStockProductsAsync(60);
+        List<Product> result = futureResult.get(); // Wait for the future to complete
+
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals(lowStockProducts, result);
+        verify(productRepository, times(1)).findLowStockProducts(60);
+    }
+
 }
