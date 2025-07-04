@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -249,4 +250,17 @@ class ProductServiceImplTest {
         verify(productRepository, times(1)).findById(1L);
         verify(productRepository, times(1)).save(productToUpdate);
     }
-}
+
+    @Test
+    void updateStock_ShouldThrowException_WhenProductDoesNotExist() {
+        // Arrange
+        when(productRepository.findById(999L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            productService.updateStock(999L, 200);
+        });
+        assertEquals("Product not found with ID: 999", exception.getMessage());
+        verify(productRepository, times(1)).findById(999L);
+
+    }
