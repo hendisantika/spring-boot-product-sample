@@ -148,4 +148,16 @@ class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.content[0].name", is("Test Product")))
                 .andExpect(jsonPath("$.content[1].name", is("Test Product 2")));
     }
+
+    @Test
+    void getProductsByCategory_ShouldReturnPageOfProducts() throws Exception {
+        mockMvc.perform(get("/api/products/category/{category}", "Test Category")
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].category", is("Test Category")))
+                .andExpect(jsonPath("$.content[1].category", is("Test Category")));
+    }
+
 }
