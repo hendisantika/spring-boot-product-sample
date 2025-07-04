@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -80,5 +81,30 @@ class ProductServiceImplTest {
         assertNotNull(savedProduct.getCreatedAt());
         assertNotNull(savedProduct.getUpdatedAt());
         verify(productRepository, times(1)).save(productToSave);
+    }
+
+    @Test
+    void saveProduct_ShouldOnlyUpdateUpdatedAt_WhenCreatedAtIsNotNull() {
+        // Arrange
+        LocalDateTime createdAt = LocalDateTime.now().minusDays(1);
+        Product productToUpdate = Product.builder()
+                .id(1L)
+                .name("Existing Product")
+                .description("Existing Description")
+                .category("Existing Category")
+                .price(new BigDecimal("149.99"))
+                .stock(75)
+                .createdAt(createdAt)
+                .build();
+
+        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Product updatedProduct = productService.saveProduct(productToUpdate);
+
+        // Assert
+        assertEquals(createdAt, updatedProduct.getCreatedAt());
+        assertNotNull(updatedProduct.getUpdatedAt());
+        verify(productRepository, times(1)).save(productToUpdate);
     }
 }
