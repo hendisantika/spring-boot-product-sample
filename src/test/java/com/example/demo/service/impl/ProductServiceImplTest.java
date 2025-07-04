@@ -138,4 +138,17 @@ class ProductServiceImplTest {
         verify(productRepository, times(1)).findById(999L);
     }
 
+    @Test
+    void findByName_ShouldReturnProduct_WhenProductExists() {
+        // Arrange
+        when(productRepository.findByName("Test Product")).thenReturn(Optional.of(testProduct));
+
+        // Act
+        Optional<Product> result = productService.findByName("Test Product");
+
+        // Assert
+        assertTrue(result.isPresent());
+        assertEquals(testProduct, result.get());
+        verify(productRepository, times(1)).findByName("Test Product");
+    }
 }
