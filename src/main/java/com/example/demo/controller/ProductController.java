@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * REST controller for Product operations optimized for high performance.
@@ -141,5 +142,21 @@ public class ProductController {
             @Parameter(description = "Maximum price", required = true) @RequestParam BigDecimal max) {
         log.info("Fetching products by price range: {} - {}", min, max);
         return ResponseEntity.ok(productService.findByPriceRange(min, max));
+    }
+
+    /**
+     * Get low stock products asynchronously.
+     */
+    @Operation(summary = "Get low stock products", description = "Returns a list of products with stock below the specified threshold (asynchronous)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class)))
+    })
+    @GetMapping("/low-stock/{threshold}")
+    public CompletableFuture<ResponseEntity<List<Product>>> getLowStockProducts(
+            @Parameter(description = "Stock threshold", required = true) @PathVariable Integer threshold) {
+        log.info("Fetching low stock products with threshold: {}", threshold);
+        return productService.findLowStockProductsAsync(threshold)
+                .thenApply(ResponseEntity::ok);
     }
 }
