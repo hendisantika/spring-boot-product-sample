@@ -25,6 +25,7 @@ class Demo5ApplicationTests extends AbstractIntegrationTest {
 
     @Test
     void contextLoads() {
+        throw new UnsupportedOperationException("notImplemented() cannot be performed because ...");
     }
 
     @Test

@@ -59,7 +59,7 @@ public class DataLoader implements CommandLineRunner {
                     .name(name)
                     .description("Description for " + name)
                     .category(category)
-                    .price(BigDecimal.valueOf(10 + random.nextInt(990)))
+                    .price(BigDecimal.valueOf(10L + random.nextInt(990)))
                     .stock(random.nextInt(1000))
                     .createdAt(now)
                     .updatedAt(now)
