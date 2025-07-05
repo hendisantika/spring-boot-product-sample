@@ -36,7 +36,7 @@ jobs:
     name: SonarQube Integration
 
   sonarqube:
-    depends-on: build
+    needs: build
     name: SonarQube Integration
     runs-on: ubuntu-latest
 
