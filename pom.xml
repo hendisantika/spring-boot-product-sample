@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>id.my.hendisantika</groupId>
-    <artifactId>demo5</artifactId>
+    <artifactId>products</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo5</name>
-    <description>demo5</description>
+    <name>products</name>
+    <description>products</description>
     <properties>
         <java.version>21</java.version>
         <sonar.organization>hendisantika</sonar.organization>
