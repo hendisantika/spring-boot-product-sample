@@ -24,11 +24,6 @@ class Demo5ApplicationTests extends AbstractIntegrationTest {
     private ProductRepository productRepository;
 
     @Test
-    void contextLoads() {
-        throw new UnsupportedOperationException("notImplemented() cannot be performed because ...");
-    }
-
-    @Test
     void testDatabaseConnection() {
         // Test that we can get a connection from the DataSource
         assertThat(dataSource).isNotNull();
