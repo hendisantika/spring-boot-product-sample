@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Data loader to initialize the database with sample data.
@@ -35,7 +35,7 @@ public class DataLoader implements CommandLineRunner {
             "Bread", "Milk", "Car Parts", "Tools", "Plants"
     };
     private final ProductRepository productRepository;
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     @Override
     public void run(String... args) {
