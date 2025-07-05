@@ -16,7 +16,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -37,6 +36,7 @@ jobs:
     name: SonarQube Integration
 
   sonarqube:
+    depends-on: build
     name: SonarQube Integration
     runs-on: ubuntu-latest
 
