@@ -23,7 +23,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     /**
      * Find product by name with query cache enabled.
      */
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
     Optional<Product> findByName(String name);
 
     /**
@@ -32,10 +32,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByCategory(String category, Pageable pageable);
 
     /**
-     * Find products by price range with optimized query.
+     * Find products by price range with optimized query and cache enabled.
      */
     @Query("SELECT p FROM Product p WHERE p.price BETWEEN :minPrice AND :maxPrice ORDER BY p.price")
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
     List<Product> findByPriceRange(@Param("minPrice") BigDecimal minPrice, @Param("maxPrice") BigDecimal maxPrice);
 
     /**
@@ -45,8 +45,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findLowStockProducts(@Param("threshold") Integer threshold);
 
     /**
-     * Count products by category.
+     * Count products by category with cache enabled.
      */
-    @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
+    @QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
     long countByCategory(String category);
 }
